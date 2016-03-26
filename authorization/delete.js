@@ -1,5 +1,4 @@
 var Boom = require('boom');
-var Promise = require('bluebird');
 
 module.exports = function(server, auth) {
   // check base permission
