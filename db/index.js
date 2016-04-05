@@ -10,6 +10,5 @@ module.exports = {
   updateCategories: require(path.normalize(__dirname + '/updateCategories')),
   allCategories: require(path.normalize(__dirname + '/allCategories')),
   getBoardInBoardMapping: require(path.normalize(__dirname + '/getBoardInBoardMapping')),
-  delete: require(path.normalize(__dirname + '/delete')),
-  watching: require(path.normalize(__dirname + '/watching')),
+  delete: require(path.normalize(__dirname + '/delete'))
 };
