@@ -33,7 +33,7 @@ module.exports = {
       payload: Joi.array().items(Joi.object().keys({
         id: Joi.string().required(),
         name: Joi.string().min(1).max(255),
-        description: Joi.string().allow(''),
+        description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number().allow(null)
       })).unique().min(1)
     },
