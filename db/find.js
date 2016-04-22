@@ -84,7 +84,7 @@ module.exports = function(id) {
       // handle deleted content for all children boards
       board.children.map(function(b) {
         if (b.post_deleted || b.user_deleted || !b.user_id) {
-          b.last_post_username = 'deleted';
+          b.last_post_username = '';
         }
         if (!b.user_id) {
           b.last_post_username = undefined;
