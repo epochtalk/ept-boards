@@ -19,6 +19,7 @@ module.exports = function(userPriority, opts) {
         b.name,
         b.description,
         b.viewable_by,
+        b.postable_by,
         b.thread_count,
         b.post_count,
         b.created_at,
@@ -92,6 +93,8 @@ module.exports = function(userPriority, opts) {
       category.boards = _.filter(boardMapping, function(board) {
         return board.category_id === category.id;
       });
+
+      // sort by view_order
       category.boards = _.sortBy(category.boards, 'view_order');
 
       // Filter out private boards
@@ -99,13 +102,13 @@ module.exports = function(userPriority, opts) {
         // remove boards not matching user priority
         category.boards = _.filter(category.boards, function(board) {
           if (board.viewable_by !== 0 && !board.viewable_by) { return true; }
-          return userPriority <= board.viewable_by;
+          else { return userPriority <= board.viewable_by; }
         });
       }
 
       // recurse through category boards
       category.boards.map(function(board) {
-        return common.boardStitching(boardMapping, board);
+        return common.boardStitching(boardMapping, board, userPriority, opts);
       });
 
       // return category
@@ -119,7 +122,7 @@ module.exports = function(userPriority, opts) {
     if (opts.hidePrivate) {
       categories = _.filter(categories, function(category) {
         if (category.viewable_by !== 0 && !category.viewable_by) { return true; }
-        return userPriority <= category.viewable_by;
+        else { return userPriority <= category.viewable_by; }
       });
     }
   })

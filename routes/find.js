@@ -25,6 +25,11 @@ module.exports = {
     pre: [ { method: 'auth.boards.find(server, auth, params.id)' } ]
   },
   handler: function(request, reply) {
-    return reply(request.db.boards.find(request.params.id));
+    var boardId = request.params.id;
+    var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
+
+    var promise = request.db.boards.find(boardId, userPriority);
+
+    return reply(promise);
   }
 };

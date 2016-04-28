@@ -7,11 +7,14 @@ var db = dbc.db;
 var helper = dbc.helper;
 var NotFoundError = Promise.OperationalError;
 
-module.exports = function(id) {
+module.exports = function(id, userPriority) {
   id = helper.deslugify(id);
 
+  if (userPriority === 0) { /** NOOP **/ }
+  else if (!userPriority) { userPriority = Number.MAX_VALUE; }
+
   // get board with given id
-  var q = 'SELECT b.id, b.name, b.description, b.viewable_by, b.created_at, b.thread_count, b.post_count, b.updated_at, b.imported_at, (SELECT bm.parent_id FROM board_mapping bm WHERE bm.board_id = b.id) as parent_id, (SELECT json_agg(row_to_json((SELECT x FROM ( SELECT bm.user_id as id, u.username as username) x ))) as moderators from board_moderators bm LEFT JOIN users u ON bm.user_id = u.id WHERE bm.board_id = b.id) as moderators FROM boards b WHERE b.id = $1;';
+  var q = 'SELECT b.id, b.name, b.description, b.viewable_by, b.postable_by, b.created_at, b.thread_count, b.post_count, b.updated_at, b.imported_at, (SELECT bm.parent_id FROM board_mapping bm WHERE bm.board_id = b.id) as parent_id, (SELECT json_agg(row_to_json((SELECT x FROM ( SELECT bm.user_id as id, u.username as username) x ))) as moderators from board_moderators bm LEFT JOIN users u ON bm.user_id = u.id WHERE bm.board_id = b.id) as moderators FROM boards b WHERE b.id = $1;';
   return db.sqlQuery(q, [id])
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }
@@ -26,6 +29,7 @@ module.exports = function(id) {
         b.name,
         b.description,
         b.viewable_by,
+        b.postable_by,
         b.thread_count,
         b.post_count,
         b.created_at,
@@ -75,7 +79,11 @@ module.exports = function(id) {
     .then(function(boardMapping) {
       // get all children boards for this board
       board.children = _.filter(boardMapping, function(boardMap) {
-        return boardMap.parent_id === board.id;
+        var isChild = boardMap.parent_id === board.id;
+        var hasPriority = false;
+        if (boardMap.viewable_by !== 0 && !boardMap.viewable_by) { hasPriority = true; }
+        else { hasPriority = userPriority <= boardMap.viewable_by; }
+        return isChild && hasPriority;
       });
 
       // sort all children boards by view_order
@@ -98,7 +106,7 @@ module.exports = function(id) {
 
       // recurse through category boards
       board.children.map(function(childBoard) {
-        return common.boardStitching(boardMapping, childBoard);
+        return common.boardStitching(boardMapping, childBoard, userPriority, { hidePrivate: true });
       });
 
       return board;

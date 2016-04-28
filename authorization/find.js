@@ -11,13 +11,13 @@ module.exports = function boardsFind(server, auth, boardId) {
     permission: 'boards.find.allow'
   });
 
-  // access board
-  var access = server.authorization.build({
+  // read board
+  var read = server.authorization.build({
     error: Boom.notFound('Board Not Found'),
     type: 'dbValue',
     method: server.db.boards.getBoardInBoardMapping,
     args: [boardId, server.plugins.acls.getUserPriority(auth)]
   });
 
-  return Promise.all([allowed, access]);
+  return Promise.all([allowed, read]);
 };

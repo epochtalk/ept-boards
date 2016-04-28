@@ -20,10 +20,11 @@ module.exports = function(board) {
       board.name = board.name || oldBoard.name;
       helper.updateAssign(board, oldBoard, board, "description");
       helper.updateAssign(board, oldBoard, board, "viewable_by");
+      helper.updateAssign(board, oldBoard, board, "postable_by");
     })
     .then(function() {
-      q = 'UPDATE boards SET name = $1, description = $2, viewable_by = $3, updated_at = now() WHERE id = $4';
-      params = [board.name, board.description || '', board.viewable_by, board.id];
+      q = 'UPDATE boards SET name = $1, description = $2, viewable_by = $3, postable_by = $4, updated_at = now() WHERE id = $5';
+      params = [board.name, board.description || '', board.viewable_by, board.postable_by, board.id];
       return client.queryAsync(q, params);
     });
   })
