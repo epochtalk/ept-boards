@@ -44,7 +44,17 @@ var moderator = {
   find: { allow: true }
 };
 
+var patroller = {
+  allCategories: { allow: true },
+  find: { allow: true }
+};
+
 var user = {
+  allCategories: { allow: true },
+  find: { allow: true }
+};
+
+var newbie = {
   allCategories: { allow: true },
   find: { allow: true }
 };
@@ -75,7 +85,9 @@ module.exports = {
     administrator: administrator,
     globalModerator: globalModerator,
     moderator: moderator,
+    patroller: patroller,
     user: user,
+    newbie: newbie,
     banned: banned,
     anonymous: anonymous,
     private: {}
