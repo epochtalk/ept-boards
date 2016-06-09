@@ -9,7 +9,6 @@ module.exports = function(board) {
   board = helper.deslugify(board);
   var q, params;
   return using(db.createTransaction(), function(client){
-    console.log(board);
     // insert new board
     q = 'INSERT INTO boards(name, description, viewable_by, postable_by, created_at) VALUES($1, $2, $3, $4, now()) RETURNING id';
     params = [board.name, board.description, board.viewable_by || null, board.postable_by || null];
