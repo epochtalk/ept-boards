@@ -11,9 +11,9 @@ module.exports = function(board) {
   return using(db.createTransaction(), function(client){
     // insert new board
     q = 'INSERT INTO boards(name, description, viewable_by, postable_by, created_at) VALUES($1, $2, $3, $4, now()) RETURNING id';
-    params = [board.name, board.description, board.viewable_by || null, board.postable_by || null];
+    params = [board.name, board.description, board.viewable_by, board.postable_by];
     return client.queryAsync(q, params)
-    .then(function(results) { console.log(results); board.id = results.rows[0].id; })
+    .then(function(results) { board.id = results.rows[0].id; })
     // insert new board metadata
     .then(function() {
       q = 'INSERT INTO metadata.boards (board_id) VALUES ($1)';
