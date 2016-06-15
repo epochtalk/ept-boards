@@ -17,7 +17,7 @@ module.exports = function(boardMapping) {
         // Category
         if (mapping.type === 'category') {
           q = 'UPDATE categories SET name = $1, viewable_by = $2, view_order = $3 WHERE id = $4';
-          params = [mapping.name, mapping.viewable_by, mapping.view_order, mapping.id];
+          params = [mapping.name, mapping.viewable_by || null, mapping.view_order, mapping.id];
           promise = client.queryAsync(q, params);
         }
         // Boards
