@@ -1,6 +1,6 @@
 {
   "name": "ept-boards",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Default Epochtalk Boards",
   "main": "index.js",
   "scripts": {
